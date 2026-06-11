@@ -48,12 +48,17 @@ const markAttendance = async (req, res, next) => {
       throw new Error('Employee profile not found');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Get current time in IST (Asia/Kolkata)
+    const now = new Date();
+    const istOptions = { timeZone: 'Asia/Kolkata' };
+    
+    // Create today's date in IST
+    const todayIST = new Date(now.toLocaleString('en-US', istOptions));
+    todayIST.setHours(0, 0, 0, 0);
 
     const alreadyMarked = await Attendance.findOne({
       employee: employee._id,
-      date: today,
+      date: todayIST,
     });
 
     if (alreadyMarked) {
@@ -61,22 +66,24 @@ const markAttendance = async (req, res, next) => {
       throw new Error('Attendance already marked for today');
     }
 
-    const currentTime = new Date();
-    const checkInTimeStr = currentTime.toLocaleTimeString('en-US', {
+    // Get check-in time in IST
+    const checkInTimeStr = now.toLocaleTimeString('en-US', {
+      timeZone: 'Asia/Kolkata',
       hour12: false,
       hour: '2-digit',
       minute: '2-digit',
     });
 
-    // Attendance Rules (Late Arrival only)
-    const lateThreshold = parse('10:40', 'HH:mm', new Date());
+    // Attendance Rules (Late Arrival only) - Use IST for threshold
+    const [hours, minutes] = checkInTimeStr.split(':').map(Number);
+    const isLate = hours > 10 || (hours === 10 && minutes > 40);
 
     let status = 'Present';
     let latePenalty = 0;
     let totalPenalty = 0;
 
-    if (isAfter(currentTime, lateThreshold)) {
-      // After 10:40 AM: Late
+    if (isLate) {
+      // After 10:40 AM IST: Late
       status = 'Late';
       latePenalty = 100;
       totalPenalty = latePenalty;
@@ -84,7 +91,7 @@ const markAttendance = async (req, res, next) => {
 
     const attendance = await Attendance.create({
       employee: employee._id,
-      date: today,
+      date: todayIST,
       checkInTime: checkInTimeStr,
       status,
       originalStatus: status,
@@ -314,12 +321,15 @@ const markHalfDay = async (req, res, next) => {
       throw new Error('Employee profile not found');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Get today in IST (Asia/Kolkata)
+    const now = new Date();
+    const istOptions = { timeZone: 'Asia/Kolkata' };
+    const todayIST = new Date(now.toLocaleString('en-US', istOptions));
+    todayIST.setHours(0, 0, 0, 0);
 
     const existingAttendance = await Attendance.findOne({
       employee: employee._id,
-      date: today,
+      date: todayIST,
     });
 
     const dailySalary = employee.monthlySalary / 30;
