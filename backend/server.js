@@ -22,14 +22,16 @@ connectDB();
 
 const app = express();
 
+// Trust proxy for Render
+app.set('trust proxy', 1);
+
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // CORS configuration
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://localhost:5174',
-  process.env.FRONTEND_URL || 'https://gnm-attendance-dashboard.netlify.app'
+  'https://gnm-attendance-dashboard.netlify.app'
 ].filter(Boolean);
 
 const corsOptions = {
@@ -41,12 +43,33 @@ const corsOptions = {
     }
   },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
-app.use(helmet());
+
+// Helmet security headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https://*"]
+    }
+  },
+  crossOriginEmbedderPolicy: false
+}));
+
+// Morgan logging
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
 
 // Set static folder for uploads
 const __filename = fileURLToPath(import.meta.url);
@@ -62,34 +85,37 @@ app.use('/api/payroll', payrollRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
-// Serve frontend in production
-if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../frontend/dist');
-  app.use(express.static(frontendPath));
-  
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(frontendPath, 'index.html'));
-  });
-} else {
-  app.get('/', (req, res) => {
-    res.send('API is running...');
-  });
-}
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
   res.status(statusCode);
   res.json({
+    success: false,
     message: err.message,
     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
 });
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  console.log(`Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
-  console.log(`Backend URL: ${process.env.BACKEND_URL || 'http://localhost:5000'}`);
+// Handle 404
+app.use('*', (req, res) => {
+  res.status(404).json({ success: false, message: 'Route not found' });
 });
+
+const PORT = process.env.PORT || 10000;
+
+// Prevent unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled Rejection:', err.message);
+  process.exit(1);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message);
+  process.exit(1);
+});
+
+const server = app.listen(PORT, () => {
+  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+});
+
+export default app;

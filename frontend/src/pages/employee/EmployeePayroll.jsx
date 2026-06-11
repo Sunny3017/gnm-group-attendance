@@ -11,7 +11,7 @@ const EmployeePayroll = () => {
   const fetchPayroll = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('${API_BASE_URL}/api/payroll/my', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/payroll/my`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setPayrolls(data);

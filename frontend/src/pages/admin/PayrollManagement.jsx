@@ -14,7 +14,7 @@ const PayrollManagement = () => {
   const fetchPayroll = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('${API_BASE_URL}/api/payroll', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/payroll`, {
         params: { month, year },
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -34,12 +34,12 @@ const PayrollManagement = () => {
     setGenerating(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data: employees } = await axios.get('${API_BASE_URL}/api/employees', {
+      const { data: employees } = await axios.get(`${API_BASE_URL}/api/employees`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
 
       for (const emp of employees) {
-        await axios.post('${API_BASE_URL}/api/payroll/generate', 
+        await axios.post(`${API_BASE_URL}/api/payroll/generate`, 
           { employeeId: emp._id, month, year },
           { headers: { Authorization: `Bearer ${userInfo.token}` } }
         );
@@ -56,7 +56,7 @@ const PayrollManagement = () => {
   const exportReport = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await axios.get('${API_BASE_URL}/api/reports/salary', {
+      const response = await axios.get(`${API_BASE_URL}/api/reports/salary`, {
         params: { month, year, format: 'excel' },
         headers: { Authorization: `Bearer ${userInfo.token}` },
         responseType: 'blob',

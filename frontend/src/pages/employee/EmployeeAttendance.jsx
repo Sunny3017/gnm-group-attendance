@@ -26,7 +26,7 @@ const EmployeeAttendance = () => {
   const fetchAttendance = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('${API_BASE_URL}/api/attendance/my', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/attendance/my`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setAttendance(data);

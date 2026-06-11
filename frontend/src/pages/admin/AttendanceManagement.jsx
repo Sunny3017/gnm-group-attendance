@@ -59,7 +59,7 @@ const AttendanceManagement = () => {
   const fetchEmployees = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('${API_BASE_URL}/api/employees', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/employees`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setEmployees(data);
@@ -89,7 +89,7 @@ const AttendanceManagement = () => {
         delete queryParams.status;
       }
       
-      const { data } = await axios.get('${API_BASE_URL}/api/attendance', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/attendance`, {
         params: queryParams,
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -184,7 +184,7 @@ const AttendanceManagement = () => {
       const employee = employees.find(e => e.employeeId === filters.employeeId);
       if (!employee) throw new Error('Employee not found');
 
-      await axios.post('${API_BASE_URL}/api/payroll', {
+      await axios.post(`${API_BASE_URL}/api/payroll`, {
         employeeId: employee._id,
         month: selectedMonth,
         year: selectedYear
@@ -209,7 +209,7 @@ const AttendanceManagement = () => {
         delete queryParams.status;
       }
 
-      const response = await axios.get('${API_BASE_URL}/api/reports/attendance', {
+      const response = await axios.get(`${API_BASE_URL}/api/reports/attendance`, {
         params: queryParams,
         headers: { Authorization: `Bearer ${userInfo.token}` },
         responseType: 'blob',

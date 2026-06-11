@@ -11,7 +11,7 @@ const LeaveManagement = () => {
   const fetchLeaves = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('${API_BASE_URL}/api/leaves', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/leaves`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setLeaves(data);

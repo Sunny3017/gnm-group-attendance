@@ -38,7 +38,7 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        const { data } = await axios.get('${API_BASE_URL}/api/dashboard/admin', {
+        const { data } = await axios.get(`${API_BASE_URL}/api/dashboard/admin`, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         setStats(data);

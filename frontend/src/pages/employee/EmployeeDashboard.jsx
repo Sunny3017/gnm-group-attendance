@@ -112,7 +112,7 @@ const EmployeeDashboard = () => {
     setMarking(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.post('${API_BASE_URL}/api/attendance/mark', {
+      await axios.post(`${API_BASE_URL}/api/attendance/mark`, {
         latitude: location.latitude,
         longitude: location.longitude,
         distanceFromOffice: Math.round(distance),
@@ -121,7 +121,7 @@ const EmployeeDashboard = () => {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       toast.success('Attendance verified. Check-in complete.');
-      fetchData();
+      fetchStats();
     } catch (err) {
       toast.error(err.response?.data?.message || 'Verification failed');
     } finally {
@@ -133,10 +133,10 @@ const EmployeeDashboard = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const [statsRes, attendanceRes] = await Promise.all([
-        axios.get('${API_BASE_URL}/api/dashboard/employee', {
+        axios.get(`${API_BASE_URL}/api/dashboard/employee`, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         }),
-        axios.get('${API_BASE_URL}/api/attendance/my', {
+        axios.get(`${API_BASE_URL}/api/attendance/my`, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         })
       ]);
@@ -153,7 +153,7 @@ const EmployeeDashboard = () => {
     setMarkingHalfDay(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.post('${API_BASE_URL}/api/attendance/halfday', {}, {
+      await axios.post(`${API_BASE_URL}/api/attendance/halfday`, {}, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       toast.success('Half-Day marked successfully!');

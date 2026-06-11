@@ -46,7 +46,7 @@ const EmployeeManagement = () => {
   const fetchEmployees = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('${API_BASE_URL}/api/employees', {
+      const { data } = await axios.get(`${API_BASE_URL}/api/employees`, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setEmployees(data);
@@ -71,7 +71,7 @@ const EmployeeManagement = () => {
         });
         toast.success('Record synchronized successfully');
       } else {
-        await axios.post('${API_BASE_URL}/api/employees', formData, {
+        await axios.post(`${API_BASE_URL}/api/employees`, formData, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         toast.success('New employee onboarded');
