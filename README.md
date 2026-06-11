@@ -2,6 +2,11 @@
 
 A comprehensive enterprise-grade attendance and payroll management system for GNM Real Estate.
 
+## 🚀 Live Deployment
+
+- **Frontend**: [https://gnm-attendance-dashboard.netlify.app/login](https://gnm-attendance-dashboard.netlify.app/login)
+- **Backend API**: [https://gnm-group-attendance.onrender.com](https://gnm-group-attendance.onrender.com)
+
 ## Features
 
 ### Admin Panel
@@ -100,11 +105,30 @@ npm start
 
 ## Deployment
 
-### Deploy to Heroku/Vercel/Railway
+### Current Deployment
 
-1. Set the environment variables in your deployment platform
-2. Make sure to build the frontend before deployment
-3. The backend will automatically serve the frontend in production mode
+- **Frontend**: Deployed on Netlify
+- **Backend**: Deployed on Render
+
+### Deploy to Netlify (Frontend)
+
+1. Connect your repository to Netlify
+2. Set build command: `cd frontend && npm run build`
+3. Set publish directory: `frontend/dist`
+4. Add environment variables (if needed)
+5. Deploy!
+
+### Deploy to Render (Backend)
+
+1. Connect your repository to Render
+2. Set build command: `cd backend && npm install && cd ../frontend && npm install && npm run build`
+3. Set start command: `cd backend && npm start`
+4. Add environment variables:
+   - `NODE_ENV`: production
+   - `PORT`: 10000
+   - `MONGO_URI`: Your MongoDB connection string
+   - `JWT_SECRET`: Your strong JWT secret
+5. Deploy!
 
 ### Docker (Coming Soon)
 
