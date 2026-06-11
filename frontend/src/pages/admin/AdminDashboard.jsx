@@ -15,6 +15,7 @@ import {
   Calendar,
   Building2
 } from 'lucide-react';
+import API_BASE_URL from '../../utils/api.js';
 import { 
   BarChart, 
   Bar, 
@@ -37,7 +38,7 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
       try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        const { data } = await axios.get('http://localhost:5000/api/dashboard/admin', {
+        const { data } = await axios.get('${API_BASE_URL}/api/dashboard/admin', {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         setStats(data);

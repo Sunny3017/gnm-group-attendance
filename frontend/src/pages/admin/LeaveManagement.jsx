@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Check, X, Clock } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../../utils/api.js';
 
 const LeaveManagement = () => {
   const [leaves, setLeaves] = useState([]);
@@ -10,7 +11,7 @@ const LeaveManagement = () => {
   const fetchLeaves = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://localhost:5000/api/leaves', {
+      const { data } = await axios.get('${API_BASE_URL}/api/leaves', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setLeaves(data);
@@ -28,7 +29,7 @@ const LeaveManagement = () => {
   const updateStatus = async (id, status) => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.put(`http://localhost:5000/api/leaves/${id}`, { status }, {
+      await axios.put(`${API_BASE_URL}/api/leaves/${id}`, { status }, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       toast.success(`Leave ${status}`);

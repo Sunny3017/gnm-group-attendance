@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Download, Edit2, Plus, X, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../../utils/api.js';
 
 const AttendanceManagement = () => {
   const [viewMode, setViewMode] = useState('list'); // 'list' or 'calendar'
@@ -58,7 +59,7 @@ const AttendanceManagement = () => {
   const fetchEmployees = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://localhost:5000/api/employees', {
+      const { data } = await axios.get('${API_BASE_URL}/api/employees', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setEmployees(data);
@@ -88,7 +89,7 @@ const AttendanceManagement = () => {
         delete queryParams.status;
       }
       
-      const { data } = await axios.get('http://localhost:5000/api/attendance', {
+      const { data } = await axios.get('${API_BASE_URL}/api/attendance', {
         params: queryParams,
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -149,7 +150,7 @@ const AttendanceManagement = () => {
     e.preventDefault();
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.put(`http://localhost:5000/api/attendance/${selectedRecord._id}`, formData, {
+      await axios.put(`${API_BASE_URL}/api/attendance/${selectedRecord._id}`, formData, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       toast.success('Attendance updated');
@@ -164,7 +165,7 @@ const AttendanceManagement = () => {
     e.preventDefault();
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.post(`http://localhost:5000/api/attendance/manual`, formData, {
+      await axios.post(`${API_BASE_URL}/api/attendance/manual`, formData, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       toast.success('Attendance added manually');
@@ -183,7 +184,7 @@ const AttendanceManagement = () => {
       const employee = employees.find(e => e.employeeId === filters.employeeId);
       if (!employee) throw new Error('Employee not found');
 
-      await axios.post('http://localhost:5000/api/payroll', {
+      await axios.post('${API_BASE_URL}/api/payroll', {
         employeeId: employee._id,
         month: selectedMonth,
         year: selectedYear
@@ -208,7 +209,7 @@ const AttendanceManagement = () => {
         delete queryParams.status;
       }
 
-      const response = await axios.get('http://localhost:5000/api/reports/attendance', {
+      const response = await axios.get('${API_BASE_URL}/api/reports/attendance', {
         params: queryParams,
         headers: { Authorization: `Bearer ${userInfo.token}` },
         responseType: 'blob',

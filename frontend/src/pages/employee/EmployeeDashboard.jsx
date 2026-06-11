@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   ShieldAlert
 } from 'lucide-react';
+import API_BASE_URL from '../../utils/api.js';
 import toast from 'react-hot-toast';
 
 const OFFICE_LOCATION = {
@@ -111,7 +112,7 @@ const EmployeeDashboard = () => {
     setMarking(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.post('http://localhost:5000/api/attendance/mark', {
+      await axios.post('${API_BASE_URL}/api/attendance/mark', {
         latitude: location.latitude,
         longitude: location.longitude,
         distanceFromOffice: Math.round(distance),
@@ -132,10 +133,10 @@ const EmployeeDashboard = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       const [statsRes, attendanceRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/dashboard/employee', {
+        axios.get('${API_BASE_URL}/api/dashboard/employee', {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         }),
-        axios.get('http://localhost:5000/api/attendance/my', {
+        axios.get('${API_BASE_URL}/api/attendance/my', {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         })
       ]);
@@ -152,7 +153,7 @@ const EmployeeDashboard = () => {
     setMarkingHalfDay(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      await axios.post('http://localhost:5000/api/attendance/halfday', {}, {
+      await axios.post('${API_BASE_URL}/api/attendance/halfday', {}, {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       toast.success('Half-Day marked successfully!');

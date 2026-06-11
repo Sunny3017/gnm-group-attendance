@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Wallet, Download, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../../utils/api.js';
 
 const EmployeePayroll = () => {
   const [payrolls, setPayrolls] = useState([]);
@@ -10,7 +11,7 @@ const EmployeePayroll = () => {
   const fetchPayroll = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://localhost:5000/api/payroll/my', {
+      const { data } = await axios.get('${API_BASE_URL}/api/payroll/my', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setPayrolls(data);
@@ -28,7 +29,7 @@ const EmployeePayroll = () => {
   const downloadSlip = async (payrollId, month, year) => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await axios.get(`http://localhost:5000/api/payroll/${payrollId}/slip`, {
+      const response = await axios.get(`${API_BASE_URL}/api/payroll/${payrollId}/slip`, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
         responseType: 'blob',
       });

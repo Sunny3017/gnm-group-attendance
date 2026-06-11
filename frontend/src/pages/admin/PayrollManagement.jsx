@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Download, RefreshCw } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../../utils/api.js';
 
 const PayrollManagement = () => {
   const [payroll, setPayroll] = useState([]);
@@ -13,7 +14,7 @@ const PayrollManagement = () => {
   const fetchPayroll = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://localhost:5000/api/payroll', {
+      const { data } = await axios.get('${API_BASE_URL}/api/payroll', {
         params: { month, year },
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
@@ -33,12 +34,12 @@ const PayrollManagement = () => {
     setGenerating(true);
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data: employees } = await axios.get('http://localhost:5000/api/employees', {
+      const { data: employees } = await axios.get('${API_BASE_URL}/api/employees', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
 
       for (const emp of employees) {
-        await axios.post('http://localhost:5000/api/payroll/generate', 
+        await axios.post('${API_BASE_URL}/api/payroll/generate', 
           { employeeId: emp._id, month, year },
           { headers: { Authorization: `Bearer ${userInfo.token}` } }
         );
@@ -55,7 +56,7 @@ const PayrollManagement = () => {
   const exportReport = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const response = await axios.get('http://localhost:5000/api/reports/salary', {
+      const response = await axios.get('${API_BASE_URL}/api/reports/salary', {
         params: { month, year, format: 'excel' },
         headers: { Authorization: `Bearer ${userInfo.token}` },
         responseType: 'blob',
@@ -166,7 +167,7 @@ const PayrollManagement = () => {
             <button 
               onClick={() => {
                 const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-                axios.get(`http://localhost:5000/api/payroll/${record._id}/slip`, {
+                axios.get(`${API_BASE_URL}/api/payroll/${record._id}/slip`, {
                   headers: { Authorization: `Bearer ${userInfo.token}` },
                   responseType: 'blob',
                 }).then(res => {

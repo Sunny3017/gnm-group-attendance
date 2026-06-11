@@ -20,6 +20,7 @@ import {
   Building2
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import API_BASE_URL from '../../utils/api.js';
 
 const EmployeeManagement = () => {
   const [employees, setEmployees] = useState([]);
@@ -45,7 +46,7 @@ const EmployeeManagement = () => {
   const fetchEmployees = async () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-      const { data } = await axios.get('http://localhost:5000/api/employees', {
+      const { data } = await axios.get('${API_BASE_URL}/api/employees', {
         headers: { Authorization: `Bearer ${userInfo.token}` }
       });
       setEmployees(data);
@@ -65,12 +66,12 @@ const EmployeeManagement = () => {
     try {
       const userInfo = JSON.parse(localStorage.getItem('userInfo'));
       if (editingEmployee) {
-        await axios.put(`http://localhost:5000/api/employees/${editingEmployee._id}`, formData, {
+        await axios.put(`${API_BASE_URL}/api/employees/${editingEmployee._id}`, formData, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         toast.success('Record synchronized successfully');
       } else {
-        await axios.post('http://localhost:5000/api/employees', formData, {
+        await axios.post('${API_BASE_URL}/api/employees', formData, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         toast.success('New employee onboarded');
@@ -86,7 +87,7 @@ const EmployeeManagement = () => {
     if (window.confirm('Are you sure you want to decommission this record? This action is irreversible.')) {
       try {
         const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        await axios.delete(`http://localhost:5000/api/employees/${id}`, {
+        await axios.delete(`${API_BASE_URL}/api/employees/${id}`, {
           headers: { Authorization: `Bearer ${userInfo.token}` }
         });
         toast.success('Record purged');
@@ -177,7 +178,7 @@ const EmployeeManagement = () => {
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 bg-brand-navy rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg shadow-brand-navy/10 relative overflow-hidden group-hover/row:scale-105 transition-transform">
                         {emp.profilePhoto ? (
-                          <img src={`http://localhost:5000${emp.profilePhoto}`} className="w-full h-full object-cover" />
+                          <img src={`${API_BASE_URL}${emp.profilePhoto}`} className="w-full h-full object-cover" />
                         ) : (
                           emp.fullName[0]
                         )}

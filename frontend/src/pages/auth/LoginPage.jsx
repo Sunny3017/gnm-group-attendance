@@ -6,6 +6,7 @@ import { setCredentials } from '../../store/slices/authSlice';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Lock, Briefcase, ChevronRight, Building2, ShieldCheck } from 'lucide-react';
+import API_BASE_URL from '../../utils/api.js';
 
 const LoginPage = () => {
   const [role, setRole] = useState('Admin');
@@ -21,7 +22,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.post('http://localhost:5000/api/users/login', {
+      const { data } = await axios.post(`${API_BASE_URL}/api/users/login`, {
         role,
         username: role === 'Admin' ? username : undefined,
         mobile: role === 'Employee' ? mobile : undefined,

@@ -12,6 +12,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
+import API_BASE_URL from '../../utils/api.js';
 
 const Navbar = ({ onMenuClick }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -81,7 +82,7 @@ const Navbar = ({ onMenuClick }) => {
           <div className="relative">
             <div className="w-12 h-12 bg-brand-navy rounded-[1.25rem] flex items-center justify-center text-white shadow-lg shadow-brand-navy/20 border-2 border-transparent group-hover:border-brand-gold transition-all overflow-hidden">
                {userInfo?.profilePhoto ? (
-                 <img src={`http://localhost:5000${userInfo.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
+                 <img src={`${API_BASE_URL}${userInfo.profilePhoto}`} alt="Profile" className="w-full h-full object-cover" />
                ) : (
                  <span className="font-black text-lg">{(userInfo?.username?.[0] || userInfo?.employeeId?.[0])?.toUpperCase()}</span>
                )}
