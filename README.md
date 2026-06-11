@@ -1,6 +1,8 @@
 # GNM Real Estate - Attendance & Payroll Management System
 
-A comprehensive enterprise-grade attendance and payroll management system for GNM Real Estate.
+A comprehensive enterprise-grade attendance and payroll management system for GNM Real Estate. ✨
+
+**Last Updated**: June 11, 2026
 
 ## 🚀 Live Deployment
 
