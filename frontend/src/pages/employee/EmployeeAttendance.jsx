@@ -156,6 +156,11 @@ const EmployeeAttendance = () => {
                       }`}>
                         {record.status}
                       </span>
+                      {record.checkInTime && record.checkInTime !== 'Half-Day-Manual' && (
+                        <div className="text-[9px] font-bold text-slate-500 mt-1">
+                          Check-in: {record.checkInTime}
+                        </div>
+                      )}
                       {record.penaltyAmount > 0 && (
                         <div className="text-[10px] font-bold text-brand-rose mt-1">₹{record.penaltyAmount}</div>
                       )}

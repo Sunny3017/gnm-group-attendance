@@ -74,16 +74,28 @@ const markAttendance = async (req, res, next) => {
       minute: '2-digit',
     });
 
-    // Attendance Rules (Late Arrival only) - Use IST for threshold
+    // Attendance Rules - Use IST for threshold
     const [hours, minutes] = checkInTimeStr.split(':').map(Number);
     const isLate = hours > 10 || (hours === 10 && minutes > 40);
+    const isAfter12PM = hours >= 12;
 
     let status = 'Present';
     let latePenalty = 0;
+    let halfDayPenalty = 0;
     let totalPenalty = 0;
+    let isHalfDay = false;
 
-    if (isLate) {
-      // After 10:40 AM IST: Late
+    const dailySalary = employee.monthlySalary / 30;
+
+    if (isAfter12PM) {
+      // After 12:00 PM IST: Automatic Half-Day (NO late penalty)
+      status = 'Half-Day';
+      isHalfDay = true;
+      halfDayPenalty = Math.round(dailySalary / 2);
+      latePenalty = 0;
+      totalPenalty = halfDayPenalty;
+    } else if (isLate) {
+      // After 10:40 AM IST but before 12:00 PM: Late only
       status = 'Late';
       latePenalty = 100;
       totalPenalty = latePenalty;
@@ -97,8 +109,8 @@ const markAttendance = async (req, res, next) => {
       originalStatus: status,
       penaltyAmount: totalPenalty,
       latePenalty,
-      halfDayPenalty: 0,
-      isHalfDay: false,
+      halfDayPenalty,
+      isHalfDay,
       latitude,
       longitude,
       distanceFromOffice: Math.round(distance),
@@ -354,7 +366,7 @@ const markHalfDay = async (req, res, next) => {
       // Create new half-day record
       const attendance = await Attendance.create({
         employee: employee._id,
-        date: today,
+        date: todayIST,
         checkInTime: 'Half-Day-Manual',
         status: 'Half-Day',
         originalStatus: 'Half-Day',
